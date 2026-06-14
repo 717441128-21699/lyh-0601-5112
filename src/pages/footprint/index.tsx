@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from 'react'
+import React, { useMemo, useState, useEffect } from 'react'
 import { View, Text, Image, ScrollView, Button } from '@tarojs/components'
 import Taro from '@tarojs/taro'
 import classnames from 'classnames'
@@ -17,9 +17,18 @@ const FootprintPage: React.FC = () => {
   const { footprints, toggleLike } = useAppStore()
   const [activeFilter, setActiveFilter] = useState('all')
 
+  const filteredFootprints = useMemo(() => {
+    if (activeFilter === 'all') return footprints
+    const targetYear = parseInt(activeFilter.replace('year_', ''))
+    return footprints.filter(f => {
+      const date = new Date(f.date)
+      return date.getFullYear() === targetYear
+    })
+  }, [footprints, activeFilter])
+
   const groupedFootprints = useMemo(() => {
     const groups: Record<string, Footprint[]> = {}
-    footprints.forEach(f => {
+    filteredFootprints.forEach(f => {
       const date = new Date(f.date)
       const key = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}`
       if (!groups[key]) {
@@ -38,7 +47,7 @@ const FootprintPage: React.FC = () => {
           items
         }
       })
-  }, [footprints])
+  }, [filteredFootprints])
 
   const yearGroups = useMemo(() => {
     const groups: Record<number, typeof groupedFootprints> = {}
@@ -56,6 +65,13 @@ const FootprintPage: React.FC = () => {
         totalCount: months.reduce((sum, m) => sum + m.items.length, 0)
       }))
   }, [groupedFootprints])
+
+  const filterYear = useMemo(() => {
+    if (activeFilter.startsWith('year_')) {
+      return parseInt(activeFilter.replace('year_', ''))
+    }
+    return null
+  }, [activeFilter])
 
   const handleFilterChange = (key: string) => {
     console.log('[Footprint] 切换筛选:', key)
@@ -93,7 +109,7 @@ const FootprintPage: React.FC = () => {
         ))}
       </View>
 
-      {footprints.length > 0 ? (
+      {filteredFootprints.length > 0 ? (
         <ScrollView scrollY className={styles.timelineContainer}>
           {yearGroups.map(yearGroup => (
             <View key={yearGroup.year} className={styles.yearSection}>
@@ -183,7 +199,9 @@ const FootprintPage: React.FC = () => {
       ) : (
         <View className={styles.emptyState}>
           <Text className={styles.emptyIcon}>📸</Text>
-          <Text className={styles.emptyText}>还没有旅行足迹，快去记录吧~</Text>
+          <Text className={styles.emptyText}>
+            {filterYear ? `${filterYear}年还没有旅行足迹，快去记录吧~` : '还没有旅行足迹，快去记录吧~'}
+          </Text>
           <Button
             className={styles.emptyButton}
             onClick={handleAddFootprint}

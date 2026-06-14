@@ -3,27 +3,512 @@
 .pageContainer {
   min-height: 100vh;
   background: $color-bg-page;
+  padding-bottom: calc(160rpx + env(safe-area-inset-bottom));
+}
+
+.hero {
+  position: relative;
+  padding: 48rpx 32rpx 80rpx;
+  background: linear-gradient(135deg, #2D7FF9 0%, #6B9FFF 50%, #FF7D4A 100%);
+  color: $color-text-white;
+  overflow: hidden;
+}
+
+.hero::before {
+  content: '';
+  position: absolute;
+  top: -100rpx;
+  right: -100rpx;
+  width: 400rpx;
+  height: 400rpx;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 50%;
+}
+
+.hero::after {
+  content: '';
+  position: absolute;
+  bottom: -80rpx;
+  left: -60rpx;
+  width: 300rpx;
+  height: 300rpx;
+  background: rgba(255, 255, 255, 0.08);
+  border-radius: 50%;
+}
+
+.heroHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 32rpx;
+  position: relative;
+  z-index: 1;
+}
+
+.backBtn {
+  width: 64rpx;
+  height: 64rpx;
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: $radius-round;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  backdrop-filter: blur(8px);
+}
+
+.backIcon {
+  font-size: 32rpx;
+  color: $color-text-white;
+  font-weight: bold;
+}
+
+.monthPicker {
+  display: flex;
+  align-items: center;
+  padding: 12rpx 24rpx;
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: $radius-button;
+  backdrop-filter: blur(8px);
+}
+
+.monthPickerText {
+  font-size: $font-size-md;
+  font-weight: $font-weight-semibold;
+  margin-right: 8rpx;
+}
+
+.monthPickerArrow {
+  font-size: 22rpx;
+  opacity: 0.9;
+}
+
+.exportBtn {
+  padding: 12rpx 24rpx;
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: $radius-button;
+  font-size: $font-size-xs;
+  backdrop-filter: blur(8px);
+  display: flex;
+  align-items: center;
+}
+
+.exportIcon {
+  font-size: 24rpx;
+  margin-right: 6rpx;
+}
+
+.heroMain {
+  position: relative;
+  z-index: 1;
+  text-align: center;
+}
+
+.badgeText {
+  display: inline-flex;
+  align-items: center;
+  padding: 10rpx 28rpx;
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: $radius-button;
+  font-size: $font-size-sm;
+  font-weight: $font-weight-medium;
+  margin-bottom: 24rpx;
+  backdrop-filter: blur(8px);
+}
+
+.badgeIcon {
+  font-size: 28rpx;
+  margin-right: 8rpx;
+}
+
+.monthTitle {
+  font-size: 56rpx;
+  font-weight: $font-weight-bold;
+  margin-bottom: 8rpx;
+}
+
+.monthSubtitle {
+  font-size: $font-size-md;
+  opacity: 0.9;
+}
+
+.statCards {
+  margin: -48rpx 24rpx 24rpx;
+  position: relative;
+  z-index: 10;
+}
+
+.statGrid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16rpx;
+}
+
+.statCard {
+  background: $color-bg-card;
+  border-radius: $radius-lg;
+  padding: 28rpx 16rpx;
+  text-align: center;
+  box-shadow: $shadow-card;
+}
+
+.statCardIcon {
+  font-size: 36rpx;
+  margin-bottom: 12rpx;
+}
+
+.statCardValue {
+  font-size: $font-size-xxl;
+  font-weight: $font-weight-bold;
+  color: $color-text-primary;
+  margin-bottom: 4rpx;
+  line-height: 1.2;
+}
+
+.statCardUnit {
+  font-size: $font-size-xs;
+  color: $color-text-tertiary;
+  font-weight: $font-weight-regular;
+}
+
+.statCardLabel {
+  font-size: $font-size-xs;
+  color: $color-text-tertiary;
+  margin-top: 4rpx;
+}
+
+.statCardHighlight {
+  .statCardValue {
+    color: $color-primary;
+  }
+}
+
+.dataSection {
+  background: $color-bg-card;
+  margin: 0 24rpx 24rpx;
+  border-radius: $radius-lg;
+  overflow: hidden;
+  box-shadow: $shadow-card;
+}
+
+.sectionTitle {
+  padding: 28rpx 32rpx;
+  font-size: $font-size-lg;
+  font-weight: $font-weight-semibold;
+  color: $color-text-primary;
+  border-bottom: 1rpx solid $color-divider;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.sectionTitleLeft {
+  display: flex;
+  align-items: center;
+}
+
+.sectionIcon {
+  font-size: 28rpx;
+  margin-right: 12rpx;
+}
+
+.sectionMore {
+  font-size: $font-size-xs;
+  color: $color-text-tertiary;
+}
+
+.photoSection {
+  padding: 16rpx;
+}
+
+.photoGrid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8rpx;
+}
+
+.photoItem {
+  position: relative;
+  padding-bottom: 100%;
+  border-radius: $radius-md;
+  overflow: hidden;
+}
+
+.photoImage {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+.photoMore {
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.5);
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  padding: 64rpx 32rpx;
+  color: $color-text-white;
 }
 
-.icon {
-  font-size: 120rpx;
-  margin-bottom: 32rpx;
+.photoMoreNum {
+  font-size: $font-size-xxl;
+  font-weight: $font-weight-bold;
 }
 
-.title {
-  font-size: $font-size-xl;
+.photoMoreText {
+  font-size: $font-size-xs;
+  opacity: 0.9;
+}
+
+.tagSection {
+  padding: 8rpx 32rpx 24rpx;
+}
+
+.tagCloud {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16rpx;
+}
+
+.tagItem {
+  padding: 12rpx 28rpx;
+  border-radius: $radius-button;
+  font-size: $font-size-sm;
+  font-weight: $font-weight-medium;
+  background: linear-gradient(135deg, rgba(45, 127, 249, 0.1), rgba(45, 127, 249, 0.05));
+  color: $color-primary;
+  border: 1rpx solid rgba(45, 127, 249, 0.2);
+  transition: all $transition-fast;
+
+  &.level1 {
+    padding: 16rpx 36rpx;
+    font-size: $font-size-lg;
+    font-weight: $font-weight-bold;
+    background: linear-gradient(135deg, rgba(45, 127, 249, 0.15), rgba(255, 125, 74, 0.15));
+    color: $color-primary;
+    border: 1rpx solid rgba(45, 127, 249, 0.3);
+  }
+
+  &.level2 {
+    padding: 14rpx 32rpx;
+    font-size: $font-size-md;
+    font-weight: $font-weight-semibold;
+  }
+
+  &.level3 {
+    background: linear-gradient(135deg, rgba(255, 125, 74, 0.1), rgba(255, 125, 74, 0.05));
+    color: $color-accent;
+    border: 1rpx solid rgba(255, 125, 74, 0.2);
+  }
+}
+
+.tagCount {
+  font-size: $font-size-xs;
+  opacity: 0.7;
+  margin-left: 4rpx;
+}
+
+.detailSection {
+  padding: 24rpx 32rpx 16rpx;
+}
+
+.detailRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20rpx 0;
+  border-bottom: 1rpx solid $color-divider;
+
+  &:last-child {
+    border-bottom: none;
+  }
+}
+
+.detailLabel {
+  display: flex;
+  align-items: center;
+  font-size: $font-size-sm;
+  color: $color-text-secondary;
+}
+
+.detailLabelIcon {
+  font-size: 28rpx;
+  margin-right: 12rpx;
+}
+
+.detailValue {
+  font-size: $font-size-md;
   font-weight: $font-weight-semibold;
   color: $color-text-primary;
+}
+
+.detailValueHighlight {
+  color: $color-primary;
+}
+
+.detailValueAccent {
+  color: $color-accent;
+}
+
+.chartSection {
+  padding: 24rpx 32rpx 32rpx;
+}
+
+.chartGrid {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  height: 200rpx;
+  gap: 8rpx;
   margin-bottom: 16rpx;
 }
 
-.desc {
-  font-size: $font-size-sm;
+.chartColumn {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-end;
+  height: 100%;
+}
+
+.chartBar {
+  width: 100%;
+  background: linear-gradient(180deg, $color-primary-light 0%, $color-primary 100%);
+  border-radius: 8rpx 8rpx 0 0;
+  min-height: 4rpx;
+  transition: height $transition-normal ease-out;
+  max-width: 32rpx;
+
+  &.max {
+    background: linear-gradient(180deg, #FFB088 0%, $color-accent 100%);
+  }
+}
+
+.chartLabel {
+  font-size: 18rpx;
   color: $color-text-tertiary;
-  text-align: center;
+  margin-top: 8rpx;
+}
+
+.chartLegend {
+  display: flex;
+  justify-content: center;
+  gap: 32rpx;
+  font-size: $font-size-xs;
+  color: $color-text-tertiary;
+}
+
+.legendItem {
+  display: flex;
+  align-items: center;
+}
+
+.legendDot {
+  width: 16rpx;
+  height: 16rpx;
+  border-radius: $radius-round;
+  margin-right: 8rpx;
+
+  &.normal {
+    background: $color-primary;
+  }
+
+  &.max {
+    background: $color-accent;
+  }
+}
+
+.summeryCard {
+  margin: 0 24rpx 24rpx;
+  padding: 32rpx;
+  background: linear-gradient(135deg, #FFF5F0 0%, #FFFBEB 50%, #F0F7FF 100%);
+  border-radius: $radius-lg;
+  position: relative;
+  overflow: hidden;
+  border: 1rpx solid rgba(255, 125, 74, 0.15);
+}
+
+.summeryQuote {
+  font-size: $font-size-md;
+  color: $color-text-secondary;
+  line-height: 1.8;
+  font-style: italic;
+  position: relative;
+  padding: 0 16rpx;
+}
+
+.summeryQuote::before,
+.summeryQuote::after {
+  content: '"';
+  font-size: 56rpx;
+  color: rgba(255, 125, 74, 0.2);
+  position: absolute;
+  line-height: 1;
+}
+
+.summeryQuote::before {
+  top: -8rpx;
+  left: -4rpx;
+}
+
+.summeryQuote::after {
+  bottom: -24rpx;
+  right: -4rpx;
+}
+
+.footerBar {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  padding: 24rpx 32rpx;
+  padding-bottom: calc(24rpx + env(safe-area-inset-bottom));
+  background: $color-bg-card;
+  box-shadow: 0 -4rpx 16rpx rgba(0, 0, 0, 0.06);
+  display: flex;
+  gap: 24rpx;
+  z-index: 100;
+}
+
+.shareBtn {
+  @include button-reset;
+  flex: 1;
+  height: $button-height-lg;
+  background: $color-bg-hover;
+  color: $color-text-secondary;
+  border-radius: $radius-button;
+  font-size: $font-size-md;
+  font-weight: $font-weight-medium;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  &:active {
+    background: $color-border;
+  }
+}
+
+.shareIcon {
+  font-size: 28rpx;
+  margin-right: 8rpx;
+}
+
+.exportBtnMain {
+  @include button-reset;
+  flex: 2;
+  height: $button-height-lg;
+  background: linear-gradient(135deg, $color-accent-light 0%, $color-accent 100%);
+  color: $color-text-white;
+  border-radius: $radius-button;
+  font-size: $font-size-md;
+  font-weight: $font-weight-semibold;
+  box-shadow: 0 4rpx 16rpx rgba(255, 125, 74, 0.3);
+
+  &:active {
+    opacity: 0.9;
+    transform: scale(0.98);
+  }
 }

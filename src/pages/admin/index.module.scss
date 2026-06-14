@@ -3,27 +3,552 @@
 .pageContainer {
   min-height: 100vh;
   background: $color-bg-page;
+  padding-bottom: calc(32rpx + env(safe-area-inset-bottom));
+}
+
+.hero {
+  padding: 40rpx 32rpx 48rpx;
+  background: linear-gradient(135deg, #1E3A8A 0%, #2D7FF9 50%, #3B82F6 100%);
+  color: $color-text-white;
+  position: relative;
+  overflow: hidden;
+
+  &::before {
+    content: '';
+    position: absolute;
+    top: -80rpx;
+    right: -80rpx;
+    width: 300rpx;
+    height: 300rpx;
+    background: rgba(255, 255, 255, 0.08);
+    border-radius: 50%;
+  }
+
+  &::after {
+    content: '';
+    position: absolute;
+    bottom: -60rpx;
+    left: -40rpx;
+    width: 240rpx;
+    height: 240rpx;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 50%;
+  }
+}
+
+.heroTop {
   display: flex;
-  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 24rpx;
+  position: relative;
+  z-index: 1;
+}
+
+.backBtn {
+  width: 64rpx;
+  height: 64rpx;
+  background: rgba(255, 255, 255, 0.15);
+  border-radius: $radius-round;
+  display: flex;
   align-items: center;
   justify-content: center;
-  padding: 64rpx 32rpx;
+  backdrop-filter: blur(8px);
 }
 
-.icon {
-  font-size: 120rpx;
-  margin-bottom: 32rpx;
+.backIcon {
+  font-size: 32rpx;
+  color: $color-text-white;
+  font-weight: bold;
 }
 
-.title {
-  font-size: $font-size-xl;
-  font-weight: $font-weight-semibold;
-  color: $color-text-primary;
+.heroTitleRow {
+  position: relative;
+  z-index: 1;
+}
+
+.heroBadge {
+  display: inline-flex;
+  align-items: center;
+  padding: 8rpx 20rpx;
+  background: rgba(255, 215, 0, 0.2);
+  border-radius: $radius-button;
+  font-size: $font-size-xs;
+  color: #FFD700;
+  font-weight: $font-weight-medium;
   margin-bottom: 16rpx;
 }
 
-.desc {
+.heroBadgeIcon {
+  font-size: 24rpx;
+  margin-right: 6rpx;
+}
+
+.heroTitle {
+  font-size: $font-size-xxl;
+  font-weight: $font-weight-bold;
+  margin-bottom: 8rpx;
+}
+
+.heroSubtitle {
   font-size: $font-size-sm;
+  opacity: 0.9;
+}
+
+.filterSection {
+  position: relative;
+  z-index: 1;
+  margin-top: 32rpx;
+  display: flex;
+  gap: 12rpx;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+
+  &::-webkit-scrollbar {
+    display: none;
+  }
+}
+
+.filterItem {
+  flex-shrink: 0;
+  padding: 12rpx 28rpx;
+  background: rgba(255, 255, 255, 0.15);
+  border-radius: $radius-button;
+  font-size: $font-size-sm;
+  color: $color-text-white;
+  border: 1rpx solid transparent;
+  transition: all $transition-fast;
+  backdrop-filter: blur(8px);
+
+  &.active {
+    background: rgba(255, 255, 255, 0.3);
+    border-color: rgba(255, 255, 255, 0.5);
+    font-weight: $font-weight-semibold;
+  }
+
+  &:active {
+    opacity: 0.8;
+  }
+}
+
+.statCards {
+  margin: -24rpx 24rpx 24rpx;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 16rpx;
+  position: relative;
+  z-index: 10;
+}
+
+.statCard {
+  background: $color-bg-card;
+  border-radius: $radius-lg;
+  padding: 24rpx;
+  box-shadow: $shadow-card;
+  position: relative;
+  overflow: hidden;
+}
+
+.statCard::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 80rpx;
+  height: 80rpx;
+  background: linear-gradient(135deg, rgba(45, 127, 249, 0.08), transparent);
+  border-radius: 0 0 0 100%;
+}
+
+.statCardIcon {
+  font-size: 40rpx;
+  margin-bottom: 16rpx;
+}
+
+.statCardValue {
+  font-size: $font-size-xxl;
+  font-weight: $font-weight-bold;
+  color: $color-text-primary;
+  margin-bottom: 4rpx;
+  line-height: 1.2;
+}
+
+.statCardUnit {
+  font-size: $font-size-xs;
   color: $color-text-tertiary;
+  font-weight: $font-weight-regular;
+}
+
+.statCardLabel {
+  font-size: $font-size-xs;
+  color: $color-text-tertiary;
+}
+
+.statCardChange {
+  display: inline-flex;
+  align-items: center;
+  margin-top: 8rpx;
+  font-size: $font-size-xs;
+  color: $color-success;
+
+  &.negative {
+    color: $color-error;
+  }
+}
+
+.trendIcon {
+  font-size: 20rpx;
+  margin-right: 4rpx;
+}
+
+.dataSection {
+  background: $color-bg-card;
+  margin: 0 24rpx 24rpx;
+  border-radius: $radius-lg;
+  overflow: hidden;
+  box-shadow: $shadow-card;
+}
+
+.sectionTitle {
+  padding: 28rpx 32rpx;
+  font-size: $font-size-lg;
+  font-weight: $font-weight-semibold;
+  color: $color-text-primary;
+  border-bottom: 1rpx solid $color-divider;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.sectionTitleLeft {
+  display: flex;
+  align-items: center;
+}
+
+.sectionIcon {
+  font-size: 28rpx;
+  margin-right: 12rpx;
+}
+
+.sectionMore {
+  font-size: $font-size-xs;
+  color: $color-text-tertiary;
+}
+
+.chartSection {
+  padding: 24rpx 32rpx 32rpx;
+}
+
+.chartGrid {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  height: 240rpx;
+  gap: 8rpx;
+  margin-bottom: 16rpx;
+}
+
+.chartColumn {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-end;
+  height: 100%;
+  min-width: 0;
+}
+
+.chartBar {
+  width: 100%;
+  max-width: 28rpx;
+  background: linear-gradient(180deg, $color-primary-light 0%, $color-primary 100%);
+  border-radius: 8rpx 8rpx 0 0;
+  min-height: 4rpx;
+  transition: height $transition-normal ease-out;
+  position: relative;
+
+  &.active {
+    background: linear-gradient(180deg, #FFB088 0%, $color-accent 100%);
+  }
+
+  &:active {
+    .chartTooltip {
+      opacity: 1;
+      transform: translateX(-50%) translateY(0);
+      pointer-events: auto;
+    }
+  }
+}
+
+.chartTooltip {
+  position: absolute;
+  bottom: calc(100% + 8rpx);
+  left: 50%;
+  transform: translateX(-50%) translateY(8rpx);
+  background: $color-text-primary;
+  color: $color-text-white;
+  padding: 6rpx 12rpx;
+  border-radius: $radius-md;
+  font-size: $font-size-xs;
+  white-space: nowrap;
+  opacity: 0;
+  pointer-events: none;
+  transition: all $transition-fast;
+  z-index: 10;
+}
+
+.chartLabel {
+  font-size: 18rpx;
+  color: $color-text-tertiary;
+  margin-top: 8rpx;
+}
+
+.chartLegend {
+  display: flex;
+  justify-content: center;
+  gap: 32rpx;
+  font-size: $font-size-xs;
+  color: $color-text-tertiary;
+  margin-top: 8rpx;
+}
+
+.legendItem {
+  display: flex;
+  align-items: center;
+}
+
+.legendDot {
+  width: 16rpx;
+  height: 16rpx;
+  border-radius: $radius-round;
+  margin-right: 8rpx;
+
+  &.normal {
+    background: $color-primary;
+  }
+
+  &.active {
+    background: $color-accent;
+  }
+}
+
+.destinationList {
+  padding: 8rpx 16rpx 16rpx;
+}
+
+.destItem {
+  display: flex;
+  align-items: center;
+  padding: 20rpx 16rpx;
+  border-radius: $radius-md;
+  margin-bottom: 8rpx;
+  transition: background $transition-fast;
+
+  &:last-child {
+    margin-bottom: 0;
+  }
+
+  &:active {
+    background: $color-bg-hover;
+  }
+}
+
+.destRank {
+  width: 56rpx;
   text-align: center;
+  font-size: $font-size-xl;
+  font-weight: $font-weight-bold;
+  color: $color-text-tertiary;
+  flex-shrink: 0;
+
+  &.top1 { color: #FFB800; }
+  &.top2 { color: #C0C4CC; }
+  &.top3 { color: #E6A23C; }
+}
+
+.destInfo {
+  flex: 1;
+  min-width: 0;
+}
+
+.destName {
+  font-size: $font-size-md;
+  font-weight: $font-weight-medium;
+  color: $color-text-primary;
+  margin-bottom: 4rpx;
+  @include text-ellipsis;
+}
+
+.destCount {
+  font-size: $font-size-xs;
+  color: $color-text-tertiary;
+}
+
+.destBarWrap {
+  width: 200rpx;
+  flex-shrink: 0;
+  margin-right: 16rpx;
+}
+
+.destBar {
+  height: 12rpx;
+  background: $color-bg-hover;
+  border-radius: $radius-round;
+  overflow: hidden;
+}
+
+.destBarFill {
+  height: 100%;
+  background: linear-gradient(90deg, $color-primary-light, $color-primary);
+  border-radius: $radius-round;
+  transition: width $transition-normal ease-out;
+}
+
+.destValue {
+  font-size: $font-size-md;
+  font-weight: $font-weight-semibold;
+  color: $color-primary;
+  min-width: 80rpx;
+  text-align: right;
+  flex-shrink: 0;
+}
+
+/* 活跃用户榜 */
+.activeUserList {
+  padding: 8rpx 16rpx 16rpx;
+}
+
+.activeUserItem {
+  display: flex;
+  align-items: center;
+  padding: 16rpx;
+  border-radius: $radius-md;
+  margin-bottom: 8rpx;
+
+  &:last-child {
+    margin-bottom: 0;
+  }
+
+  &:active {
+    background: $color-bg-hover;
+  }
+}
+
+.activeUserAvatar {
+  width: 64rpx;
+  height: 64rpx;
+  border-radius: $radius-round;
+  margin-right: 16rpx;
+  flex-shrink: 0;
+}
+
+.activeUserInfo {
+  flex: 1;
+  min-width: 0;
+}
+
+.activeUserName {
+  font-size: $font-size-md;
+  font-weight: $font-weight-medium;
+  color: $color-text-primary;
+  margin-bottom: 4rpx;
+  @include text-ellipsis;
+}
+
+.activeUserData {
+  font-size: $font-size-xs;
+  color: $color-text-tertiary;
+}
+
+.activeUserValue {
+  font-size: $font-size-lg;
+  font-weight: $font-weight-bold;
+  color: $color-accent;
+  min-width: 80rpx;
+  text-align: right;
+}
+
+/* 概览统计 */
+.overviewGrid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 16rpx;
+  padding: 16rpx 32rpx 32rpx;
+}
+
+.overviewCard {
+  background: $color-bg-hover;
+  border-radius: $radius-md;
+  padding: 20rpx;
+}
+
+.overviewLabel {
+  font-size: $font-size-xs;
+  color: $color-text-tertiary;
+  margin-bottom: 6rpx;
+}
+
+.overviewValue {
+  font-size: $font-size-xl;
+  font-weight: $font-weight-bold;
+  color: $color-text-primary;
+}
+
+.overviewUnit {
+  font-size: $font-size-xs;
+  color: $color-text-tertiary;
+  font-weight: $font-weight-regular;
+}
+
+.overviewDesc {
+  font-size: $font-size-xs;
+  color: $color-text-tertiary;
+  margin-top: 4rpx;
+}
+
+.overviewValue.blue {
+  color: $color-primary;
+}
+
+.overviewValue.orange {
+  color: $color-accent;
+}
+
+.overviewValue.green {
+  color: $color-success;
+}
+
+.overviewValue.purple {
+  color: #8B5CF6;
+}
+
+/* 快捷操作 */
+.actionGrid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 16rpx;
+  padding: 16rpx 32rpx 32rpx;
+}
+
+.actionItem {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 24rpx 8rpx;
+  border-radius: $radius-md;
+  transition: all $transition-fast;
+
+  &:active {
+    background: $color-bg-hover;
+  }
+}
+
+.actionIcon {
+  font-size: 40rpx;
+  margin-bottom: 8rpx;
+}
+
+.actionLabel {
+  font-size: $font-size-xs;
+  color: $color-text-secondary;
 }

@@ -3,27 +3,318 @@
 .pageContainer {
   min-height: 100vh;
   background: $color-bg-page;
+  padding-bottom: calc(180rpx + env(safe-area-inset-bottom));
+}
+
+.formSection {
+  background: $color-bg-card;
+  margin: 24rpx;
+  border-radius: $radius-lg;
+  overflow: hidden;
+  box-shadow: $shadow-card;
+}
+
+.sectionTitle {
+  padding: 28rpx 32rpx;
+  font-size: $font-size-lg;
+  font-weight: $font-weight-semibold;
+  color: $color-text-primary;
+  border-bottom: 1rpx solid $color-divider;
+  display: flex;
+  align-items: center;
+}
+
+.sectionIcon {
+  font-size: 28rpx;
+  margin-right: 12rpx;
+}
+
+.formItem {
+  display: flex;
+  align-items: flex-start;
+  padding: 28rpx 32rpx;
+  border-bottom: 1rpx solid $color-divider;
+
+  &:last-child {
+    border-bottom: none;
+  }
+}
+
+.label {
+  width: 160rpx;
+  flex-shrink: 0;
+  font-size: $font-size-md;
+  color: $color-text-secondary;
+  padding-top: 12rpx;
+}
+
+.required {
+  color: $color-error;
+  margin-right: 4rpx;
+}
+
+.inputWrap {
+  flex: 1;
+  min-width: 0;
+}
+
+.textInput {
+  width: 100%;
+  height: 80rpx;
+  padding: 0 24rpx;
+  background: $color-bg-hover;
+  border-radius: $radius-md;
+  font-size: $font-size-md;
+  color: $color-text-primary;
+  border: none;
+  outline: none;
+  box-sizing: border-box;
+  @include text-ellipsis;
+}
+
+.textareaInput {
+  width: 100%;
+  min-height: 200rpx;
+  padding: 20rpx 24rpx;
+  background: $color-bg-hover;
+  border-radius: $radius-md;
+  font-size: $font-size-md;
+  color: $color-text-primary;
+  line-height: 1.6;
+  border: none;
+  outline: none;
+  box-sizing: border-box;
+}
+
+.pickerInput {
+  width: 100%;
+  height: 80rpx;
+  padding: 0 24rpx;
+  background: $color-bg-hover;
+  border-radius: $radius-md;
+  font-size: $font-size-md;
+  color: $color-text-primary;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.pickerText {
+  color: $color-text-primary;
+  @include text-ellipsis;
+  flex: 1;
+}
+
+.pickerPlaceholder {
+  color: $color-text-tertiary;
+}
+
+.pickerArrow {
+  font-size: 24rpx;
+  color: $color-text-tertiary;
+  margin-left: 12rpx;
+  flex-shrink: 0;
+}
+
+.counter {
+  font-size: $font-size-xs;
+  color: $color-text-tertiary;
+  text-align: right;
+  margin-top: 8rpx;
+}
+
+.tagList {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16rpx;
+  margin-top: 4rpx;
+}
+
+.tagItem {
+  padding: 10rpx 24rpx;
+  background: $color-bg-hover;
+  border-radius: $radius-button;
+  font-size: $font-size-sm;
+  color: $color-text-secondary;
+  transition: all $transition-fast;
+
+  &.selected {
+    background: $color-primary;
+    color: $color-text-white;
+  }
+}
+
+.photoSection {
+  padding: 0 32rpx 28rpx;
+}
+
+.photoList {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16rpx;
+}
+
+.photoItem {
+  width: 200rpx;
+  height: 200rpx;
+  border-radius: $radius-md;
+  overflow: hidden;
+  position: relative;
+}
+
+.photoImage {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+.photoDelete {
+  position: absolute;
+  top: 8rpx;
+  right: 8rpx;
+  width: 40rpx;
+  height: 40rpx;
+  background: rgba(0, 0, 0, 0.6);
+  border-radius: $radius-round;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: $color-text-white;
+  font-size: 24rpx;
+}
+
+.photoAdd {
+  width: 200rpx;
+  height: 200rpx;
+  border: 2rpx dashed $color-border;
+  border-radius: $radius-md;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  padding: 64rpx 32rpx;
+  color: $color-text-tertiary;
+  transition: all $transition-fast;
+
+  &:active {
+    opacity: 0.7;
+  }
 }
 
-.icon {
-  font-size: 120rpx;
-  margin-bottom: 32rpx;
+.photoAddIcon {
+  font-size: 48rpx;
+  margin-bottom: 8rpx;
 }
 
-.title {
-  font-size: $font-size-xl;
+.photoAddText {
+  font-size: $font-size-xs;
+}
+
+.quickLocation {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12rpx;
+  margin-top: 16rpx;
+}
+
+.quickLocationItem {
+  padding: 8rpx 20rpx;
+  background: $color-travel-tag;
+  color: $color-travel-tag-text;
+  border-radius: $radius-button;
+  font-size: $font-size-xs;
+  transition: all $transition-fast;
+
+  &:active {
+    opacity: 0.7;
+  }
+}
+
+.footerBar {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  padding: 24rpx 32rpx;
+  padding-bottom: calc(24rpx + env(safe-area-inset-bottom));
+  background: $color-bg-card;
+  box-shadow: 0 -4rpx 16rpx rgba(0, 0, 0, 0.06);
+  display: flex;
+  gap: 24rpx;
+  z-index: 100;
+}
+
+.cancelBtn {
+  @include button-reset;
+  flex: 1;
+  height: $button-height-lg;
+  background: $color-bg-hover;
+  color: $color-text-secondary;
+  border-radius: $radius-button;
+  font-size: $font-size-md;
+  font-weight: $font-weight-medium;
+
+  &:active {
+    background: $color-border;
+  }
+}
+
+.submitBtn {
+  @include button-reset;
+  flex: 2;
+  height: $button-height-lg;
+  background: linear-gradient(135deg, $color-primary-light 0%, $color-primary 100%);
+  color: $color-text-white;
+  border-radius: $radius-button;
+  font-size: $font-size-md;
   font-weight: $font-weight-semibold;
-  color: $color-text-primary;
-  margin-bottom: 16rpx;
+  box-shadow: 0 4rpx 16rpx rgba(45, 127, 249, 0.3);
+
+  &:active {
+    opacity: 0.9;
+    transform: scale(0.98);
+  }
+
+  &.disabled {
+    opacity: 0.5;
+    pointer-events: none;
+  }
 }
 
-.desc {
+.previewMap {
+  width: 100%;
+  height: 200rpx;
+  border-radius: $radius-md;
+  background: linear-gradient(135deg, #E8F0FE 0%, #D4E4FD 100%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  color: $color-primary;
+  margin-top: 16rpx;
+}
+
+.previewMapIcon {
+  font-size: 40rpx;
+  margin-bottom: 8rpx;
+}
+
+.previewMapText {
+  font-size: $font-size-sm;
+  color: $color-text-secondary;
+}
+
+.rangeValue {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 8rpx;
+  margin-top: 8rpx;
   font-size: $font-size-sm;
   color: $color-text-tertiary;
-  text-align: center;
+}
+
+.rangeHighlight {
+  color: $color-primary;
+  font-weight: $font-weight-semibold;
+  font-size: $font-size-md;
 }
