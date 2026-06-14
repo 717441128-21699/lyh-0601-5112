@@ -521,3 +521,71 @@
     box-shadow: 0 0 0 4rpx rgba(255, 125, 74, 0.2);
   }
 }
+
+/* 筛选栏 */
+.filterBar {
+  display: flex;
+  gap: 16rpx;
+  padding: 16rpx 0 20rpx;
+  border-bottom: 1rpx solid $color-divider;
+  margin-bottom: 20rpx;
+}
+
+.filterItem {
+  padding: 12rpx 28rpx;
+  border-radius: $radius-button;
+  background: $color-bg-hover;
+  font-size: $font-size-sm;
+  color: $color-text-secondary;
+  transition: all 0.2s;
+
+  &.active {
+    background: $color-primary;
+    color: $color-text-white;
+    font-weight: $font-weight-medium;
+  }
+
+  &:active {
+    opacity: 0.85;
+  }
+}
+
+/* 城市筛选横滚 */
+.cityFilterBar {
+  display: flex;
+  gap: 12rpx;
+  padding: 0 0 20rpx;
+  white-space: nowrap;
+}
+
+.cityChip {
+  display: inline-flex;
+  align-items: center;
+  padding: 8rpx 20rpx;
+  border-radius: $radius-round;
+  background: $color-bg-page;
+  border: 1rpx solid $color-border;
+  font-size: $font-size-xs;
+  color: $color-text-secondary;
+  flex-shrink: 0;
+
+  &.cityChipActive {
+    background: rgba(45, 127, 249, 0.1);
+    border-color: $color-primary;
+    color: $color-primary;
+    font-weight: $font-weight-medium;
+  }
+}
+
+/* 点赞 */
+.likeItem {
+  cursor: pointer;
+
+  &:active {
+    transform: scale(0.95);
+  }
+}
+
+.liked {
+  color: $color-accent;
+}

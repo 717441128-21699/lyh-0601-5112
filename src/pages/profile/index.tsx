@@ -1,6 +1,6 @@
 import React, { useMemo, useState } from 'react'
-import { View, Text, Image, Button } from '@tarojs/components'
-import Taro, { useRouter } from '@tarojs/taro'
+import { View, Text, Image, Button, ScrollView } from '@tarojs/components'
+import Taro, { useRouter, useDidShow } from '@tarojs/taro'
 import classnames from 'classnames'
 import styles from './index.module.scss'
 import { mockUsers, getUserById } from '@/data/users'
@@ -10,12 +10,22 @@ import { formatDate, formatCost, formatNumber } from '@/utils'
 
 const landscapeIds = [1015, 1018, 1036, 1039, 1044]
 
+type FilterType = 'all' | 'year' | 'city'
+
 const ProfilePage: React.FC = () => {
   const router = useRouter()
-  const { currentUser: storeCurrentUser, footprints: storeFootprints } = useAppStore()
-  const userId = router.params.id || 'u1'
+  const {
+    currentUser: storeCurrentUser,
+    footprints: storeFootprints,
+    social,
+    toggleFollow,
+    isFollowing,
+    toggleLike
+  } = useAppStore()
 
-  const [isFollowing, setIsFollowing] = useState(false)
+  const userId = router.params.id || 'u1'
+  const [activeFilter, setActiveFilter] = useState<FilterType>('all')
+  const [selectedCity, setSelectedCity] = useState<string>('')
 
   const isSelf = userId === storeCurrentUser.id
 
@@ -26,12 +36,34 @@ const ProfilePage: React.FC = () => {
     return mockUsers[1]
   }, [userId, isSelf, storeCurrentUser])
 
-  const userFootprints = useMemo(() => {
+  const allUserFootprints = useMemo(() => {
     if (isSelf) {
-      return storeFootprints.slice(0, 5)
+      return storeFootprints
     }
-    return getFootprintsByUserId(targetUser.id).slice(0, 5)
+    return getFootprintsByUserId(targetUser.id)
   }, [isSelf, targetUser.id, storeFootprints])
+
+  const availableCities = useMemo(() => {
+    const citySet = new Set(allUserFootprints.map(f => f.location.city))
+    return Array.from(citySet)
+  }, [allUserFootprints])
+
+  const filteredFootprints = useMemo(() => {
+    let result = [...allUserFootprints]
+
+    if (activeFilter === 'year') {
+      const currentYear = new Date().getFullYear()
+      result = result.filter(f => new Date(f.date).getFullYear() === currentYear)
+    } else if (activeFilter === 'city' && selectedCity) {
+      result = result.filter(f => f.location.city === selectedCity)
+    }
+
+    return result
+  }, [allUserFootprints, activeFilter, selectedCity])
+
+  const displayFootprints = useMemo(() => {
+    return filteredFootprints.slice(0, 10)
+  }, [filteredFootprints])
 
   const userStats = useMemo(() => {
     const u = targetUser
@@ -51,12 +83,21 @@ const ProfilePage: React.FC = () => {
   }, [targetUser])
 
   const mapDots = useMemo(() => {
-    return Array.from({ length: Math.min(userFootprints.length, 8) }, (_, i) => ({
+    const count = Math.min(allUserFootprints.length, 8)
+    return Array.from({ length: count }, (_, i) => ({
       left: 15 + (i * 11) % 80,
       top: 20 + (i * 17) % 60,
       accent: i % 2 === 0
     }))
-  }, [userFootprints.length])
+  }, [allUserFootprints.length])
+
+  const isFollowingTarget = useMemo(() => {
+    return isFollowing(targetUser.id)
+  }, [social.followingUserIds, targetUser.id, isFollowing])
+
+  useDidShow(() => {
+    console.log('[Profile] 页面显示, userId:', userId)
+  })
 
   const handleBack = () => {
     Taro.navigateBack().catch(() => Taro.switchTab({ url: '/pages/discover/index' }))
@@ -64,15 +105,20 @@ const ProfilePage: React.FC = () => {
 
   const handleFollow = () => {
     if (isSelf) return
-    setIsFollowing(!isFollowing)
+    toggleFollow(targetUser.id)
     Taro.showToast({
-      title: isFollowing ? '已取消关注' : '关注成功',
+      title: isFollowingTarget ? '已取消关注' : '关注成功',
       icon: 'success'
     })
   }
 
   const handleFootprintClick = (fpId: string) => {
     Taro.navigateTo({ url: `/pages/footprint-detail/index?id=${fpId}` })
+  }
+
+  const handleLike = (e: any, fpId: string) => {
+    e.stopPropagation()
+    toggleLike(fpId)
   }
 
   const handleShare = () => {
@@ -87,13 +133,30 @@ const ProfilePage: React.FC = () => {
     }
   }
 
+  const handleFilterChange = (filter: FilterType) => {
+    setActiveFilter(filter)
+    if (filter === 'city' && availableCities.length > 0 && !selectedCity) {
+      setSelectedCity(availableCities[0])
+    }
+  }
+
+  const handleCityChange = (city: string) => {
+    setSelectedCity(city)
+  }
+
+  const displayFollowerCount = useMemo(() => {
+    if (isSelf) return targetUser.followerCount
+    const base = targetUser.followerCount
+    return isFollowingTarget ? base : base
+  }, [targetUser.followerCount, isFollowingTarget, isSelf])
+
   return (
-    <View className={styles.pageContainer}>
+    <ScrollView scrollY className={styles.pageContainer}>
       {/* Hero区 */}
       <View className={styles.hero}>
         <Image
           className={styles.heroBg}
-          src={`https://picsum.photos/id/${landscapeIds[Math.abs(targetUser.id.charCodeAt(1) % landscapeIds.length)}/750/500`}
+          src={`https://picsum.photos/id/${landscapeIds[Math.abs(targetUser.id.charCodeAt(1) % landscapeIds.length)]}/750/500`}
           mode='aspectFill'
         />
         <View className={styles.heroOverlay} />
@@ -103,7 +166,7 @@ const ProfilePage: React.FC = () => {
             <Text className={styles.backIcon}>‹</Text>
           </View>
           <View className={styles.shareBtn} onClick={handleShare}>
-            <Text className={styles.shareIcon}>�</Text>
+            <Text className={styles.shareIcon}>↗</Text>
           </View>
         </View>
 
@@ -170,7 +233,7 @@ const ProfilePage: React.FC = () => {
       {/* 粉丝关注 */}
       <View className={styles.socialRow}>
         <View className={styles.socialCard}>
-          <Text className={styles.socialValue}>{formatNumber(targetUser.followerCount)}</Text>
+          <Text className={styles.socialValue}>{formatNumber(displayFollowerCount)}</Text>
           <Text className={styles.socialLabel}>粉丝</Text>
         </View>
         <View className={styles.socialCard}>
@@ -189,14 +252,14 @@ const ProfilePage: React.FC = () => {
           <Button
             className={classnames(
               styles.actionBtn,
-              isFollowing ? styles.secondary : styles.primary
+              isFollowingTarget ? styles.secondary : styles.primary
             )}
             onClick={handleFollow}
           >
             <Text className={styles.actionIcon}>
-              {isFollowing ? '✓' : '+'}
+              {isFollowingTarget ? '✓' : '+'}
             </Text>
-            <Text>{isFollowing ? '已关注' : '关注TA'}</Text>
+            <Text>{isFollowingTarget ? '已关注' : '关注TA'}</Text>
           </Button>
           <Button
             className={classnames(styles.actionBtn, styles.secondary)}
@@ -302,12 +365,10 @@ const ProfilePage: React.FC = () => {
 
       {/* 最新足迹 */}
       <View className={styles.dataSection}>
-        <View className={styles.sectionTitle}
-          style={{ justifyContent: 'space-between' }}
-        >
+        <View className={styles.sectionTitle}>
           <View style={{ display: 'flex', alignItems: 'center' }}>
             <Text className={styles.sectionIcon}>📸</Text>
-            <Text>最新足迹</Text>
+            <Text>{isSelf ? '我的足迹' : 'TA的足迹'}</Text>
           </View>
           <Text
             className={styles.detailValue}
@@ -317,9 +378,50 @@ const ProfilePage: React.FC = () => {
             查看全部 ›
           </Text>
         </View>
-        {userFootprints.length > 0 ? (
+
+        {/* 筛选条 */}
+        <View className={styles.filterBar}>
+          <View
+            className={classnames(styles.filterItem, activeFilter === 'all' && styles.active)}
+            onClick={() => handleFilterChange('all')}
+          >
+            <Text>全部</Text>
+          </View>
+          <View
+            className={classnames(styles.filterItem, activeFilter === 'year' && styles.active)}
+            onClick={() => handleFilterChange('year')}
+          >
+            <Text>今年</Text>
+          </View>
+          {availableCities.length > 0 && (
+            <View
+              className={classnames(styles.filterItem, activeFilter === 'city' && styles.active)}
+              onClick={() => handleFilterChange('city')}
+            >
+              <Text>按城市</Text>
+            </View>
+          )}
+        </View>
+
+        {/* 城市子筛选 */}
+        {activeFilter === 'city' && availableCities.length > 0 && (
+          <ScrollView scrollX className={styles.cityFilterBar}>
+            {availableCities.map(city => (
+              <View
+                key={city}
+                className={classnames(styles.cityChip, selectedCity === city && styles.cityChipActive)}
+                onClick={() => handleCityChange(city)}
+              >
+                <Text>{city}</Text>
+              </View>
+            ))}
+          </ScrollView>
+        )}
+
+        {/* 足迹列表 */}
+        {displayFootprints.length > 0 ? (
           <View className={styles.footprintList}>
-            {userFootprints.map(fp => (
+            {displayFootprints.map(fp => (
               <View
                 key={fp.id}
                 className={styles.footprintCard}
@@ -340,8 +442,13 @@ const ProfilePage: React.FC = () => {
                       <Text className={styles.metaIcon}>📅</Text>
                       <Text>{formatDate(fp.date)}</Text>
                     </View>
-                    <View className={styles.metaItem}>
-                      <Text className={styles.metaIcon}>❤️</Text>
+                    <View
+                      className={classnames(styles.metaItem, styles.likeItem)}
+                      onClick={(e) => handleLike(e, fp.id)}
+                    >
+                      <Text className={classnames(styles.metaIcon, fp.isLiked && styles.liked)}>
+                        {fp.isLiked ? '❤️' : '🤍'}
+                      </Text>
                       <Text>{fp.likes}</Text>
                     </View>
                     <View className={styles.metaItem}>
@@ -357,12 +464,19 @@ const ProfilePage: React.FC = () => {
           <View className={styles.emptyState}>
             <Text className={styles.emptyIcon}>🏞️</Text>
             <Text className={styles.emptyText}>
-              {isSelf ? '还没有足迹，去记录你的第一次旅行吧~' : `${targetUser.nickname} 还没有公开的足迹'}
+              {isSelf
+                ? '还没有足迹，去记录你的第一次旅行吧~'
+                : activeFilter === 'year'
+                  ? `${targetUser.nickname} 今年还没有足迹`
+                  : activeFilter === 'city'
+                    ? `${selectedCity} 还没有足迹记录`
+                    : `${targetUser.nickname} 还没有公开的足迹`
+              }
             </Text>
           </View>
         )}
       </View>
-    </View>
+    </ScrollView>
   )
 }
 

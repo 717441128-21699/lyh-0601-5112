@@ -1,11 +1,11 @@
 import React, { useMemo, useState } from 'react'
-import { View, Text, Image, Button, Picker } from '@tarojs/components'
+import { View, Text, Image, Button, Picker, ScrollView } from '@tarojs/components'
 import Taro, { useRouter } from '@tarojs/taro'
 import classnames from 'classnames'
 import styles from './index.module.scss'
 import { mockMonthlyStats, getYearStats } from '@/data/stats'
 import { useAppStore } from '@/store/useAppStore'
-import { formatCost, formatDistance, formatNumber, formatDateCN } from '@/utils'
+import { formatCost, formatDistance, formatNumber, formatDateCN, formatDate } from '@/utils'
 
 const MonthlyReportPage: React.FC = () => {
   const router = useRouter()
@@ -38,7 +38,8 @@ const MonthlyReportPage: React.FC = () => {
         photos: [],
         tags: [],
         dailyStats: [],
-        topTags: []
+        topTags: [],
+        footprints: []
       }
     }
 
@@ -71,7 +72,8 @@ const MonthlyReportPage: React.FC = () => {
       newProvinces: uniqueProvinces.size,
       photos: allPhotos,
       topTags,
-      dailyStats: mockMonthlyStats.dailyStats
+      dailyStats: mockMonthlyStats.dailyStats,
+      footprints: monthFootprints
     }
   }, [footprints, selectedYear, selectedMonth])
 
@@ -387,6 +389,50 @@ const MonthlyReportPage: React.FC = () => {
           </View>
         </View>
       )}
+
+      {/* 本月足迹列表 */}
+      <View className={styles.dataSection}>
+        <View className={styles.sectionTitle}>
+          <View className={styles.sectionTitleLeft}>
+            <Text className={styles.sectionIcon}>📔</Text>
+            <Text>本月足迹</Text>
+          </View>
+          <Text className={styles.sectionMore}>共 {stats.footprints.length} 条 ›</Text>
+        </View>
+        {stats.footprints.length > 0 ? (
+          <View className={styles.monthlyFpList}>
+            {stats.footprints.map(fp => (
+              <View
+                key={fp.id}
+                className={styles.monthlyFpCard}
+                onClick={() => Taro.navigateTo({ url: `/pages/footprint-detail/index?id=${fp.id}` })}
+              >
+                <Image
+                  className={styles.monthlyFpImage}
+                  src={fp.photos[0]}
+                  mode='aspectFill'
+                />
+                <View className={styles.monthlyFpInfo}>
+                  <Text className={styles.monthlyFpTitle}>{fp.title}</Text>
+                  <Text className={styles.monthlyFpLocation}>
+                    📍 {fp.location.city}
+                  </Text>
+                  <View className={styles.monthlyFpMeta}>
+                    <Text className={styles.monthlyFpMetaItem}>📅 {formatDate(fp.date)}</Text>
+                    <Text className={styles.monthlyFpMetaItem}>💰 {formatCost(fp.cost)}</Text>
+                    <Text className={styles.monthlyFpMetaItem}>🚶 {fp.duration}h</Text>
+                  </View>
+                </View>
+              </View>
+            ))}
+          </View>
+        ) : (
+          <View className={styles.emptyFpList}>
+            <Text className={styles.emptyIcon}>📝</Text>
+            <Text className={styles.emptyPhotoText}>本月还没有足迹记录</Text>
+          </View>
+        )}
+      </View>
 
       {/* 底部操作栏 */}
       <View className={styles.footerBar}>

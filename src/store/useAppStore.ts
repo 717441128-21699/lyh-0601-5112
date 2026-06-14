@@ -7,11 +7,18 @@ import { getFootprintsByUserId } from '@/data/footprints'
 
 const STORAGE_KEY = 'travel_footprints_user_u1'
 const USER_STORAGE_KEY = 'travel_user_stats_u1'
+const SOCIAL_STORAGE_KEY = 'travel_social_u1'
+
+interface SocialState {
+  followingUserIds: string[]
+  likedFootprintIds: string[]
+}
 
 interface AppState {
   currentUser: User
   footprints: Footprint[]
   isLoading: boolean
+  social: SocialState
 
   setCurrentUser: (user: User) => void
   addFootprint: (footprint: Footprint) => void
@@ -20,6 +27,12 @@ interface AppState {
   initFromStorage: () => void
   persistFootprints: () => void
   recalcUserStats: () => void
+
+  toggleFollow: (userId: string) => void
+  isFollowing: (userId: string) => boolean
+  isLiked: (footprintId: string) => boolean
+  persistSocial: () => void
+  initSocialFromStorage: () => void
 }
 
 const calculateUserStats = (footprints: Footprint[]) => {
@@ -47,9 +60,14 @@ export const useAppStore = create<AppState>((set, get) => ({
   currentUser: mockCurrentUser,
   footprints: [],
   isLoading: false,
+  social: {
+    followingUserIds: [],
+    likedFootprintIds: []
+  },
 
   initFromStorage: () => {
     console.log('[Store] 从本地存储初始化数据')
+    get().initSocialFromStorage()
     try {
       const saved = Taro.getStorageSync(STORAGE_KEY)
       if (saved && Array.isArray(saved) && saved.length > 0) {
@@ -151,27 +169,106 @@ export const useAppStore = create<AppState>((set, get) => ({
     get().recalcUserStats()
   },
 
-  toggleLike: (footprintId: string) => {
-    console.log('[Store] 切换点赞状态:', footprintId)
-    set(state => ({
-      footprints: state.footprints.map(f => {
-        if (f.id === footprintId) {
-          return {
-            ...f,
-            isLiked: !f.isLiked,
-            likes: f.isLiked ? f.likes - 1 : f.likes + 1
-          }
-        }
-        return f
-      })
-    }))
-  },
-
   loadUserFootprints: (userId: string) => {
     console.log('[Store] 加载用户足迹:', userId)
     set({ isLoading: true })
     const saved = Taro.getStorageSync(STORAGE_KEY)
     const footprints = saved || getFootprintsByUserId(userId)
     set({ footprints, isLoading: false })
-  }
+  },
+
+  initSocialFromStorage: () => {
+    console.log('[Store] 初始化社交状态')
+    try {
+      const saved = Taro.getStorageSync(SOCIAL_STORAGE_KEY)
+      if (saved && typeof saved === 'object') {
+        set({
+          social: {
+            followingUserIds: saved.followingUserIds || [],
+            likedFootprintIds: saved.likedFootprintIds || []
+          }
+        })
+        console.log('[Store] 社交状态加载完成，关注:', saved.followingUserIds?.length, '点赞:', saved.likedFootprintIds?.length)
+      }
+    } catch (e) {
+      console.error('[Store] 加载社交状态失败:', e)
+    }
+  },
+
+  persistSocial: () => {
+    try {
+      const { social } = get()
+      Taro.setStorageSync(SOCIAL_STORAGE_KEY, social)
+    } catch (e) {
+      console.error('[Store] 保存社交状态失败:', e)
+    }
+  },
+
+  isFollowing: (userId: string) => {
+    const { social } = get()
+    return social.followingUserIds.includes(userId)
+  },
+
+  isLiked: (footprintId: string) => {
+    const { social } = get()
+    return social.likedFootprintIds.includes(footprintId)
+  },
+
+  toggleFollow: (userId: string) => {
+    console.log('[Store] 切换关注状态:', userId)
+    set(state => {
+      const isCurrentlyFollowing = state.social.followingUserIds.includes(userId)
+      const newFollowing = isCurrentlyFollowing
+        ? state.social.followingUserIds.filter(id => id !== userId)
+        : [...state.social.followingUserIds, userId]
+
+      const user = state.currentUser
+      const newFollowingCount = isCurrentlyFollowing
+        ? user.followingCount - 1
+        : user.followingCount + 1
+
+      return {
+        social: {
+          ...state.social,
+          followingUserIds: newFollowing
+        },
+        currentUser: {
+          ...user,
+          followingCount: newFollowingCount
+        }
+      }
+    })
+    get().persistSocial()
+  },
+
+  toggleLike: (footprintId: string) => {
+    console.log('[Store] 切换点赞状态:', footprintId)
+    set(state => {
+      const isCurrentlyLiked = state.social.likedFootprintIds.includes(footprintId)
+      const newLikedIds = isCurrentlyLiked
+        ? state.social.likedFootprintIds.filter(id => id !== footprintId)
+        : [...state.social.likedFootprintIds, footprintId]
+
+      const newFootprints = state.footprints.map(f => {
+        if (f.id === footprintId) {
+          return {
+            ...f,
+            isLiked: !isCurrentlyLiked,
+            likes: isCurrentlyLiked ? f.likes - 1 : f.likes + 1
+          }
+        }
+        return f
+      })
+
+      return {
+        social: {
+          ...state.social,
+          likedFootprintIds: newLikedIds
+        },
+        footprints: newFootprints
+      }
+    })
+    get().persistSocial()
+    get().persistFootprints()
+  },
 }))
