@@ -18,8 +18,8 @@ const MinePage: React.FC = () => {
   }
 
   const handleMyFootprints = () => {
-    console.log('[Mine] 我的足迹')
-    Taro.switchTab({ url: '/pages/footprint/index' })
+    console.log('[Mine] 我的足迹 → 个人主页')
+    Taro.navigateTo({ url: `/pages/profile/index?id=${currentUser.id}` })
   }
 
   const handleMyCollections = () => {

@@ -175,6 +175,14 @@
   color: $color-text-primary;
   margin-bottom: 4rpx;
   line-height: 1.2;
+  display: inline-block;
+}
+
+.statCardUnit {
+  font-size: $font-size-sm;
+  color: $color-text-placeholder;
+  font-weight: $font-weight-regular;
+  margin-left: 2rpx;
 }
 
 .statLabel {

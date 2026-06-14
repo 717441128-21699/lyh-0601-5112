@@ -76,35 +76,7 @@ const MonthlyReportPage: React.FC = () => {
   }, [footprints, selectedYear, selectedMonth])
 
   const stats = useMemo(() => {
-    if (dynamicStats.hasData) return dynamicStats
-    return {
-      hasData: true,
-      totalFootprints: mockMonthlyStats.totalFootprints,
-      totalDistance: mockMonthlyStats.totalDistance,
-      totalCost: mockMonthlyStats.totalCost,
-      totalDays: mockMonthlyStats.totalDays,
-      newCities: mockMonthlyStats.newCities,
-      newProvinces: mockMonthlyStats.newProvinces,
-      photos: [
-        `https://picsum.photos/id/1015/400/400`,
-        `https://picsum.photos/id/1018/400/400`,
-        `https://picsum.photos/id/1036/400/400`,
-        `https://picsum.photos/id/1039/400/400`,
-        `https://picsum.photos/id/1044/400/400`,
-        `https://picsum.photos/id/292/400/400`,
-        `https://picsum.photos/id/312/400/400`,
-        `https://picsum.photos/id/326/400/400`,
-        `https://picsum.photos/id/401/400/400`,
-        `https://picsum.photos/id/431/400/400`,
-        `https://picsum.photos/id/570/400/400`,
-        `https://picsum.photos/id/580/400/400`,
-        `https://picsum.photos/id/1016/400/400`,
-        `https://picsum.photos/id/1019/400/400`,
-        `https://picsum.photos/id/1025/400/400`
-      ],
-      topTags: mockMonthlyStats.topTags,
-      dailyStats: mockMonthlyStats.dailyStats
-    }
+    return dynamicStats
   }, [dynamicStats])
 
   const chartData = useMemo(() => {
@@ -112,13 +84,13 @@ const MonthlyReportPage: React.FC = () => {
     const displayDays = Math.min(maxDaysInMonth, 30)
     const data = Array.from({ length: displayDays }, (_, i) => ({
       day: i + 1,
-      count: i < stats.dailyStats.length
-        ? stats.dailyStats[i]?.footprintCount || Math.floor(Math.random() * 3)
-        : Math.floor(Math.random() * 2)
+      count: stats.hasData && i < stats.dailyStats.length
+        ? stats.dailyStats[i]?.footprintCount || 0
+        : 0
     }))
     const maxCount = Math.max(...data.map(d => d.count), 1)
     return { data, maxCount }
-  }, [stats.dailyStats, selectedYear, selectedMonth])
+  }, [stats.dailyStats, stats.hasData, selectedYear, selectedMonth])
 
   const handleBack = () => {
     Taro.navigateBack().catch(() => Taro.switchTab({ url: '/pages/stats/index' }))
@@ -254,23 +226,30 @@ const MonthlyReportPage: React.FC = () => {
           <Text className={styles.sectionMore}>共 {stats.photos.length} 张 ›</Text>
         </View>
         <View className={styles.photoSection}>
-          <View className={styles.photoGrid}>
-            {displayPhotos.map((photo, idx) => (
-              <View key={idx} className={styles.photoItem}>
-                <Image
-                  className={styles.photoImage}
-                  src={photo}
-                  mode='aspectFill'
-                />
-                {idx === 8 && remainingPhotos > 0 && (
-                  <View className={styles.photoMore}>
-                    <Text className={styles.photoMoreNum}>+{remainingPhotos}</Text>
-                    <Text className={styles.photoMoreText}>更多</Text>
-                  </View>
-                )}
-              </View>
-            ))}
-          </View>
+          {displayPhotos.length > 0 ? (
+            <View className={styles.photoGrid}>
+              {displayPhotos.map((photo, idx) => (
+                <View key={idx} className={styles.photoItem}>
+                  <Image
+                    className={styles.photoImage}
+                    src={photo}
+                    mode='aspectFill'
+                  />
+                  {idx === 8 && remainingPhotos > 0 && (
+                    <View className={styles.photoMore}>
+                      <Text className={styles.photoMoreNum}>+{remainingPhotos}</Text>
+                      <Text className={styles.photoMoreText}>更多</Text>
+                    </View>
+                  )}
+                </View>
+              ))}
+            </View>
+          ) : (
+            <View className={styles.emptyPhoto}>
+              <Text className={styles.emptyIcon}>📷</Text>
+              <Text className={styles.emptyPhotoText}>本月暂无旅行照片</Text>
+            </View>
+          )}
         </View>
       </View>
 
@@ -278,7 +257,7 @@ const MonthlyReportPage: React.FC = () => {
       <View className={styles.dataSection}>
         <View className={styles.sectionTitle}>
           <View className={styles.sectionTitleLeft}>
-            <Text className={styles.sectionIcon}>�📊</Text>
+            <Text className={styles.sectionIcon}>��</Text>
             <Text>详细数据</Text>
           </View>
         </View>
@@ -342,31 +321,40 @@ const MonthlyReportPage: React.FC = () => {
           </View>
         </View>
         <View className={styles.chartSection}>
-          <View className={styles.chartGrid}>
-            {chartData.data.slice(0, 15).map((item, idx) => {
-              const heightPercent = (item.count / chartData.maxCount) * 100
-              const isMax = item.count === chartData.maxCount && item.count > 0
-              return (
-                <View key={idx} className={styles.chartColumn}>
-                  <View
-                    className={classnames(styles.chartBar, isMax && styles.max)}
-                    style={{ height: `${Math.max(heightPercent, 2)}%` }}
-                  />
-                  <Text className={styles.chartLabel}>{item.day}</Text>
-                </View>
-              )
-            })}
-          </View>
-          <View className={styles.chartLegend}>
-            <View className={styles.legendItem}>
-              <View className={classnames(styles.legendDot, styles.normal)} />
-              <Text>日常足迹</Text>
+          {stats.hasData ? (
+            <View className={styles.chartGrid}>
+              {chartData.data.slice(0, 15).map((item, idx) => {
+                const heightPercent = (item.count / chartData.maxCount) * 100
+                const isMax = item.count === chartData.maxCount && item.count > 0
+                return (
+                  <View key={idx} className={styles.chartColumn}>
+                    <View
+                      className={classnames(styles.chartBar, isMax && styles.max)}
+                      style={{ height: `${Math.max(heightPercent, 2)}%` }}
+                    />
+                    <Text className={styles.chartLabel}>{item.day}</Text>
+                  </View>
+                )
+              })}
             </View>
-            <View className={styles.legendItem}>
-              <View className={classnames(styles.legendDot, styles.max)} />
-              <Text>高峰日</Text>
+          ) : (
+            <View className={styles.emptyChart}>
+              <Text className={styles.emptyIcon}>📊</Text>
+              <Text className={styles.emptyPhotoText}>本月暂无足迹分布数据</Text>
             </View>
-          </View>
+          )}
+          {stats.hasData && (
+            <View className={styles.chartLegend}>
+              <View className={styles.legendItem}>
+                <View className={classnames(styles.legendDot, styles.normal)} />
+                <Text>日常足迹</Text>
+              </View>
+              <View className={styles.legendItem}>
+                <View className={classnames(styles.legendDot, styles.max)} />
+                <Text>高峰日</Text>
+              </View>
+            </View>
+          )}
         </View>
       </View>
 
