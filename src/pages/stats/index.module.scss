@@ -1,0 +1,345 @@
+@use '@/styles/variables.scss' as *;
+
+.pageContainer {
+  min-height: 100vh;
+  background: $color-bg-page;
+  padding-bottom: 120rpx;
+}
+
+.statsHeader {
+  background: linear-gradient(135deg, $color-primary 0%, $color-primary-light 100%);
+  padding: 48rpx 32rpx;
+  padding-top: calc(env(safe-area-inset-top) + 48rpx);
+  color: $color-text-white;
+}
+
+.headerTitle {
+  font-size: 36rpx;
+  font-weight: $font-weight-bold;
+  margin-bottom: 12rpx;
+}
+
+.headerSubtitle {
+  font-size: $font-size-sm;
+  opacity: 0.8;
+}
+
+.overviewCards {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20rpx;
+  margin: -40rpx 32rpx 0;
+  position: relative;
+  z-index: 10;
+}
+
+.overviewCard {
+  width: calc(50% - 10rpx);
+  background: $color-bg-card;
+  border-radius: $radius-lg;
+  padding: 24rpx;
+  box-shadow: $shadow-card;
+}
+
+.overviewCardFull {
+  width: 100%;
+}
+
+.cardValue {
+  font-size: 40rpx;
+  font-weight: $font-weight-bold;
+  color: $color-text-primary;
+  margin-bottom: 8rpx;
+}
+
+.cardValueHighlight {
+  color: $color-primary;
+}
+
+.cardLabel {
+  font-size: $font-size-sm;
+  color: $color-text-secondary;
+  display: flex;
+  align-items: center;
+}
+
+.cardIcon {
+  font-size: 28rpx;
+  margin-right: 8rpx;
+}
+
+.section {
+  margin: 32rpx;
+  background: $color-bg-card;
+  border-radius: $radius-lg;
+  box-shadow: $shadow-card;
+  overflow: hidden;
+}
+
+.sectionHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 28rpx;
+  border-bottom: 1rpx solid $color-divider;
+}
+
+.sectionTitle {
+  font-size: $font-size-lg;
+  font-weight: $font-weight-semibold;
+  color: $color-text-primary;
+}
+
+.sectionMore {
+  font-size: $font-size-sm;
+  color: $color-primary;
+}
+
+.chartContainer {
+  padding: 28rpx;
+}
+
+.chartTitle {
+  font-size: $font-size-md;
+  color: $color-text-secondary;
+  margin-bottom: 20rpx;
+}
+
+.barChart {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  height: 200rpx;
+  padding-bottom: 32rpx;
+  border-bottom: 1rpx solid $color-divider;
+}
+
+.barItem {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  position: relative;
+}
+
+.bar {
+  width: 36rpx;
+  background: linear-gradient(180deg, $color-primary-light 0%, $color-primary 100%);
+  border-radius: 8rpx 8rpx 0 0;
+  margin-bottom: 12rpx;
+  min-height: 8rpx;
+  transition: height $transition-base;
+}
+
+.barActive {
+  background: linear-gradient(180deg, $color-secondary-light 0%, $color-secondary 100%);
+}
+
+.barLabel {
+  font-size: 20rpx;
+  color: $color-text-tertiary;
+}
+
+.tagCloud {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16rpx;
+  padding: 0 28rpx 28rpx;
+}
+
+.tagItem {
+  padding: 12rpx 24rpx;
+  background: $color-travel-tag;
+  color: $color-travel-tag-text;
+  border-radius: $radius-round;
+  font-size: $font-size-sm;
+  display: flex;
+  align-items: center;
+}
+
+.tagCount {
+  margin-left: 8rpx;
+  font-weight: $font-weight-medium;
+}
+
+.tagItemLarge {
+  font-size: $font-size-md;
+  padding: 16rpx 28rpx;
+  background: $color-primary;
+  color: $color-text-white;
+}
+
+.challengeList {
+  padding: 0 28rpx 28rpx;
+}
+
+.challengeItem {
+  display: flex;
+  align-items: center;
+  padding: 20rpx 0;
+  border-bottom: 1rpx solid $color-divider;
+
+  &:last-child {
+    border-bottom: none;
+  }
+}
+
+.challengeIcon {
+  width: 80rpx;
+  height: 80rpx;
+  border-radius: $radius-md;
+  background: linear-gradient(135deg, $color-secondary-light 0%, $color-secondary 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 36rpx;
+  margin-right: 20rpx;
+  flex-shrink: 0;
+}
+
+.challengeInfo {
+  flex: 1;
+  min-width: 0;
+}
+
+.challengeName {
+  font-size: $font-size-md;
+  font-weight: $font-weight-medium;
+  color: $color-text-primary;
+  margin-bottom: 8rpx;
+  @include text-ellipsis;
+}
+
+.challengeProgress {
+  display: flex;
+  align-items: center;
+  margin-bottom: 8rpx;
+}
+
+.progressBar {
+  flex: 1;
+  height: 12rpx;
+  background: $color-bg-hover;
+  border-radius: 6rpx;
+  overflow: hidden;
+  margin-right: 16rpx;
+}
+
+.progressFill {
+  height: 100%;
+  background: linear-gradient(90deg, $color-primary-light 0%, $color-primary 100%);
+  border-radius: 6rpx;
+  transition: width $transition-base;
+}
+
+.progressText {
+  font-size: $font-size-xs;
+  color: $color-text-tertiary;
+  flex-shrink: 0;
+}
+
+.challengeMeta {
+  display: flex;
+  justify-content: space-between;
+  font-size: $font-size-xs;
+  color: $color-text-tertiary;
+}
+
+.reportCard {
+  margin: 0 32rpx 32rpx;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  border-radius: $radius-lg;
+  padding: 32rpx;
+  color: $color-text-white;
+  box-shadow: 0 8rpx 24rpx rgba(102, 126, 234, 0.4);
+  transition: all $transition-base;
+
+  &:active {
+    transform: scale(0.98);
+  }
+}
+
+.reportTitle {
+  font-size: $font-size-lg;
+  font-weight: $font-weight-semibold;
+  margin-bottom: 12rpx;
+  display: flex;
+  align-items: center;
+}
+
+.reportIcon {
+  font-size: 32rpx;
+  margin-right: 12rpx;
+}
+
+.reportDesc {
+  font-size: $font-size-sm;
+  opacity: 0.9;
+  margin-bottom: 20rpx;
+}
+
+.reportStats {
+  display: flex;
+  gap: 32rpx;
+}
+
+.reportStat {
+  font-size: $font-size-sm;
+  opacity: 0.9;
+}
+
+.reportStatValue {
+  font-size: 28rpx;
+  font-weight: $font-weight-semibold;
+  margin-left: 8rpx;
+}
+
+.reportArrow {
+  position: absolute;
+  right: 32rpx;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 32rpx;
+  opacity: 0.8;
+}
+
+.reportCard {
+  position: relative;
+}
+
+.adminEntry {
+  margin: 0 32rpx;
+  padding: 24rpx 28rpx;
+  background: $color-bg-card;
+  border-radius: $radius-lg;
+  box-shadow: $shadow-card;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  transition: all $transition-base;
+
+  &:active {
+    opacity: 0.9;
+  }
+}
+
+.adminEntryLeft {
+  display: flex;
+  align-items: center;
+}
+
+.adminEntryIcon {
+  font-size: 36rpx;
+  margin-right: 16rpx;
+}
+
+.adminEntryText {
+  font-size: $font-size-md;
+  color: $color-text-primary;
+  font-weight: $font-weight-medium;
+}
+
+.adminEntryArrow {
+  font-size: 24rpx;
+  color: $color-text-tertiary;
+}
